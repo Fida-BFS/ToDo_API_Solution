@@ -18,7 +18,8 @@ public class CorsConfig {
         // Specify allowed origins explicitly
         config.setAllowedOrigins(List.of(
                 "http://localhost:5173",
-                "http://localhost:3000"
+                "http://localhost:3000",
+                "http://localhost:9090"
         ));
 
         // Specify allowed methods

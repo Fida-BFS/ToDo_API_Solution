@@ -16,5 +16,10 @@ public record PersonDto(
         @NotBlank(message = "Email is required")
         @Email(message = "Invalid email format")
         @Size(max = 150, message = "Email must be less than 150 characters")
-        String email) {
-}
+        String email,
+        String username,
+        @NotBlank(message = "Role is required")
+        String role // add role
+
+)
+{}

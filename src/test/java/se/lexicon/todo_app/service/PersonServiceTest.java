@@ -7,8 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-//import se.lexicon.notify.model.Email;
-//import se.lexicon.notify.service.MessageService;
 import se.lexicon.todo_app.dto.PersonDto;
 import se.lexicon.todo_app.dto.PersonRegistrationDto;
 import se.lexicon.todo_app.entity.Person;
@@ -27,15 +25,11 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class PersonServiceTest {
 
-
     @Mock
     private PersonRepository personRepository;
 
     @Mock
     private UserRepository userRepository;
-
-    //@Mock
-    //private MessageService<Email> emailService;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -45,17 +39,21 @@ public class PersonServiceTest {
 
     private Person person;
     private PersonDto personDto;
+
     private final Long TEST_ID = 1L;
     private final String TEST_NAME = "Mehrdad Javan";
     private final String TEST_EMAIL = "mehrdad.javan@lexicon.se";
     private final String TEST_USERNAME = "mehrdad";
     private final String TEST_PASSWORD = "Test123!@#";
+    private final String TEST_ROLE = "USER";
 
     @BeforeEach
     void setUp() {
         person = new Person(TEST_NAME, TEST_EMAIL);
         person.setId(TEST_ID);
-        personDto = new PersonDto(TEST_ID, TEST_NAME, TEST_EMAIL);
+
+        // ✅ match PersonDto signature (id, name, email, username, role)
+        personDto = new PersonDto(TEST_ID, TEST_NAME, TEST_EMAIL, TEST_USERNAME, TEST_ROLE);
     }
 
     @Test
@@ -85,7 +83,6 @@ public class PersonServiceTest {
         assertEquals(TEST_NAME, created.name());
         assertEquals(TEST_EMAIL, created.email());
         verify(personRepository).save(any(Person.class));
-        // Removed verify(userRepository).save(any()) since it's handled by cascade
     }
 
     @Test
@@ -111,7 +108,9 @@ public class PersonServiceTest {
         // Arrange
         String updatedName = "Mehrdad Updated";
         String updatedEmail = "mehrdad.lexicon.updated@lexicon.se";
-        PersonDto updateDto = new PersonDto(TEST_ID, updatedName, updatedEmail);
+
+        // ✅ must provide username + role
+        PersonDto updateDto = new PersonDto(TEST_ID, updatedName, updatedEmail, TEST_USERNAME, TEST_ROLE);
 
         Person existingPerson = new Person(TEST_NAME, TEST_EMAIL);
         existingPerson.setId(TEST_ID);
