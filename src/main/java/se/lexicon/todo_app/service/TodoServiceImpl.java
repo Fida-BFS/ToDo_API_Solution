@@ -2,6 +2,8 @@ package se.lexicon.todo_app.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import se.lexicon.notify.model.Email;
+import se.lexicon.notify.service.MessageService;
 import se.lexicon.todo_app.dto.AttachmentDto;
 import se.lexicon.todo_app.dto.TodoDto;
 import se.lexicon.todo_app.entity.Attachment;
@@ -21,9 +23,12 @@ public class TodoServiceImpl implements TodoService {
     private final TodoRepository todoRepository;
     private final PersonRepository personRepository;
 
-    public TodoServiceImpl(TodoRepository todoRepository, PersonRepository personRepository) {
+    private final MessageService<Email> emailMessageService;
+
+    public TodoServiceImpl(TodoRepository todoRepository, PersonRepository personRepository, MessageService<Email> emailMessageService) {
         this.todoRepository = todoRepository;
         this.personRepository = personRepository;
+        this.emailMessageService = emailMessageService;
     }
 
     private TodoDto convertToDto(Todo todo) {
@@ -35,6 +40,8 @@ public class TodoServiceImpl implements TodoService {
                         attachment.getData()
                 ))
                 .collect(Collectors.toList());
+
+        emailMessageService.sendMessage(new Email(todo.getPerson().getEmail(), "Todo Accessed", "Your todo item was accessed."));
 
         return TodoDto.builder()
                 .id(todo.getId())

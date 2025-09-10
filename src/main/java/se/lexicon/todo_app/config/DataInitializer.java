@@ -24,7 +24,7 @@ public class DataInitializer {
 
                 System.out.println("Creating initial users...");
 
-                Person adminPerson = new Person("Admin", "admin@test.se");
+                Person adminPerson = new Person("Admin", "fida.boufares@gmail.com");
                 User admin = new User("admin", passwordEncoder.encode("password"));
                 admin.addRole(Role.USER);
                 admin.addRole(Role.ADMIN);
